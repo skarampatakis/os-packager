@@ -44,9 +44,14 @@
     </div>
     <div class="form-group">
       <label class="control-label" for="step3-location-city">City</label>
-      <input type="text" id="step3-location-city" class="form-control"
+      <select id="step3-location-city" class="form-control"
         ng-disabled="!(attributes.regionCode && attributes.countryCode)"
-        name="city" ng-model="attributes.cityCode">
+        name="city"
+        ng-model="attributes.cityCode"
+        ng-options="city.code as city.name for city in (geoData.cities | orderBy:'name')"></select>
+<!--      <input type="text" id="step3-location-city" class="form-control"
+        ng-disabled="!(attributes.regionCode && attributes.countryCode)"
+        name="city" ng-model="attributes.cityCode">-->
     </div>
 
     <div class="row form-group">

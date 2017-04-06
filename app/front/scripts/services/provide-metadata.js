@@ -77,6 +77,35 @@ angular.module('Application')
           }
         });
       };
+      
+      //UtilsService.getCities();
+      geoData.cities = prependEmptyItem([]);
+
+      result.updateCities = function() {
+        var attributes = PackageService.getAttributes();
+        var countries = attributes.countryCode.toLowerCase();
+        countries = !!countries ? [countries]
+          : _.map(
+          geoData.countries,
+          function(item) {
+            return item.code;
+          }
+        );
+       
+        UtilsService.getCities(countries).$promise.then(function(items) {
+          var attributes = PackageService.getAttributes();
+          geoData.cities = prependEmptyItem(items);
+          var codes = _.map(items, function(item) {
+            return item.code;            
+          });
+          var isItemFound = !!_.find(codes, function(item) {
+            return item == attributes.cityCode;
+          });
+          if (!isItemFound) {
+            attributes.cityCode = '';
+          }
+        });
+      };
 
       result.validatePackage = function(form) {
         var result = ValidationService.validateAttributesForm(form);

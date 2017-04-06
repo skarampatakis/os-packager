@@ -4,7 +4,7 @@ var _ = require('lodash');
 var utils = require('./utils');
 require('isomorphic-fetch');
 
-var cosmopolitanApiUrl = '//cosmopolitan.openspending.org/?format=json';
+var cosmopolitanApiUrl = '//localhost:8000/?format=json';
 
 function upper(v) {
   return (v + '').toUpperCase();
@@ -72,6 +72,20 @@ function getCountries(useProxy) {
   });
 }
 
+function getCities(useProxy) {
+  return getItemsFromSource('cities', useProxy).then(function(items) {
+    return _.map(items, function(item) {
+      return {
+        code: item.id,
+        name: item.name,
+        //population : item.population,
+        country: _.isObject(item.country) ? item.country.id : null,
+        region: _.isObject(item.region) ? item.region.id : null
+      };
+    });
+  });
+}
+
 function getContinents(useProxy) {
   return getItemsFromSource('continents', useProxy).then(function(items) {
     return _.map(items, function(item) {
@@ -94,6 +108,7 @@ function getCurrencies(useProxy) {
   });
 }
 
+module.exports.getCities = getCities;
 module.exports.getCountries = getCountries;
 module.exports.getContinents = getContinents;
 module.exports.getCurrencies = getCurrencies;

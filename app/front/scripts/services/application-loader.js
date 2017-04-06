@@ -12,7 +12,8 @@ angular.module('Application')
         // Preload continents and countries
         UtilsService.getCurrencies().$promise,
         UtilsService.getContinents().$promise,
-        UtilsService.getCountries().$promise
+        UtilsService.getCountries().$promise,
+        //UtilsService.getCities().$promise
       ];
 
       var dataPackageUrl = $location.search().package;

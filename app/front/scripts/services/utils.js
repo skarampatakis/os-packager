@@ -12,6 +12,7 @@ angular.module('Application')
       var allContinents = null;
       var allCountries = null;
       var allCurrencies = null;
+      var allCities = null;
 
       return {
         findConcept: function(osType) {
@@ -127,6 +128,55 @@ angular.module('Application')
           if (!continent) {
             // If continent is not available, cache all countries
             allCountries = result;
+          }
+          return result;
+        },
+        //TODO: Fix performance
+        //just a copy of getCountries for demonstration. A better approach could
+        // be to get the variables on country selection using a filter on 
+        // the API. Countries are by far less than all cities. Maybe also
+        //loading from local file could be a possible solution.
+        getCities: function getCities(country) {
+          if (!country && allCities) {
+            // If country is not available, use cache (all countries)
+            return allCities;
+          }
+          var result = [];
+          result.$promise = $q(function(resolve, reject) {
+            if (!!country) {
+              // If continent is available, try to load all countries,
+              // and then filter them. Resolve with filtered array
+              getCities().$promise.then(function(cities) {
+                var filtered = [];
+                if (_.isArray(country)) {
+                  filtered = _.filter(cities, function(city) {
+                    return !!_.find(country, function(item) {
+                      return item == city.country;
+                    });
+                  });
+                } else {
+                  filtered = _.filter(cities, function(city) {
+                    return city.country == country;
+                  });
+                }
+
+                [].push.apply(result, filtered);
+                resolve(result);
+              }).catch(reject);
+            } else {
+              // If country is not available, just load all countries
+              cosmopolitan.getCities(false)
+                .then(resolve)
+                .catch(reject);
+            }
+          });
+          result.$promise.then(function(items) {
+            [].push.apply(result, items);
+            return items;
+          });
+          if (!country) {
+            // If continent is not available, cache all countries
+            allCities = result;
           }
           return result;
         }

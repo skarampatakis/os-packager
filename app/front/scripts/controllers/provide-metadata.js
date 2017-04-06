@@ -41,6 +41,11 @@ angular.module('Application')
           ProvideMetadataService.updateCountries();
           $scope.geoData = ProvideMetadataService.getGeoData();
         });
+        
+        $scope.$watch('attributes.countryCode', function() {
+          ProvideMetadataService.updateCities();
+          $scope.geoData = ProvideMetadataService.getGeoData();
+        });
 
         $scope.$watch('attributes', function(newValue, oldValue) {
           if ((newValue === oldValue)) {
